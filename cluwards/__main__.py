@@ -21,20 +21,22 @@ def main():
     from web3.middleware import geth_poa_middleware
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
-    currentBlock = w3.eth.blockNumber
-
     contract = w3.eth.contract(address=Web3.toChecksumAddress('0x1162e2efce13f99ed259ffc24d99108aaa0ce935'), abi=ABI)
     totalCurrentRewards = 0
     console.clear()
+    counted_blocks = []
     while True:
+        currentBlock = w3.eth.blockNumber
+        block = currentBlock
+        lastBal = contract.functions.balanceOf(addr).call(block_identifier=block)
+        bals = []
+        bals_raw = []
         while True:
             try:
-                balance = contract.functions.balanceOf(addr).call()
-                block = currentBlock
-                lastBal = contract.functions.balanceOf(addr).call(block_identifier=block)
-                bals = []
-                bals_raw = []
-                totalCurrentRewards += w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether')
+                balance = contract.functions.balanceOf(addr).call(block_identifier=block)
+                if not block in counted_blocks:
+                    totalCurrentRewards += w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether')
+                    counted_blocks.append(block)
                 bals.append("+" + str(w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether')))
                 bals_raw.append(w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether'))
                 lastBal = balance
@@ -46,7 +48,7 @@ def main():
 
         bals.reverse()
         console.clear()
-        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards:,}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:4]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
+        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards:,}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:3]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
         time.sleep(15)
 
 if __name__ == "__main__":
