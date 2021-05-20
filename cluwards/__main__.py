@@ -48,7 +48,7 @@ def main():
 
         bals.reverse()
         console.clear()
-        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:4]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
+        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:4]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
         time.sleep(15)
 
 if __name__ == "__main__":
