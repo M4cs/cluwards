@@ -25,15 +25,17 @@ def main():
 
     contract = w3.eth.contract(address=Web3.toChecksumAddress('0x1162e2efce13f99ed259ffc24d99108aaa0ce935'), abi=ABI)
     totalCurrentRewards = 0
+    balance = contract.functions.balanceOf(addr).call()
+
+    block = currentBlock
+    lastBal = contract.functions.balanceOf(addr).call(block_identifier=block)
+    bals = []
+    bals_raw = []
     console.clear()
     while True:
         while True:
             try:
-                balance = contract.functions.balanceOf(addr).call()
-                block = currentBlock
-                lastBal = contract.functions.balanceOf(addr).call(block_identifier=block)
-                bals = []
-                bals_raw = []
+                balance = contract.functions.balanceOf(addr).call(block_identifier=block)
                 totalCurrentRewards += w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether')
                 bals.append("+" + str(w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether')))
                 bals_raw.append(w3.fromWei((Decimal(lastBal) - Decimal(balance))* (Decimal(10) ** 9), 'ether'))
@@ -46,7 +48,7 @@ def main():
 
         bals.reverse()
         console.clear()
-        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards:,}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:4]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
+        print(Panel(f'[bold blue]Current Balance:[/bold blue] {w3.fromWei(Decimal(contract.functions.balanceOf(addr).call())* (Decimal(10) ** 9), "ether"):,}\n[bold yellow]Average Reward per Block over last 1 minute:[/bold yellow] {sum(bals_raw[0:20]) / len(bals_raw[0:20]):,}\n[bold yellow]Average Reward per Block over last 3 minutes:[/bold yellow] {sum(bals_raw) / len(bals_raw):,}\n[bold green]Total Rewards over last 3 minutes: [/bold green]{sum(bals_raw):,}\n[bold cyan]Total Rewards Since Tracking Began:[/bold cyan] {totalCurrentRewards}', title=f'[bold purple]CLUCoin Reward Summary ({addr[0:4]}..{addr[-4:]}):[/bold purple]', title_align='center', highlight=True))
         time.sleep(15)
 
 if __name__ == "__main__":

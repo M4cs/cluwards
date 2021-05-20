@@ -1,0 +1,11 @@
+README.md
+setup.py
+cluwards/__init__.py
+cluwards/__main__.py
+cluwards.egg-info/PKG-INFO
+cluwards.egg-info/SOURCES.txt
+cluwards.egg-info/dependency_links.txt
+cluwards.egg-info/entry_points.txt
+cluwards.egg-info/requires.txt
+cluwards.egg-info/top_level.txt
+cluwards.egg-info/zip-safe
